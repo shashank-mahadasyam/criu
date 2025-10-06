@@ -19,7 +19,10 @@ const char *test_author = "Shashank Balaji <shashank.mahadasyam@sony.com>";
 #define UPROBE_EVENT_NAME	"uprobes_test"
 #define UPROBED_FUNCTION	uprobe_target
 
-void UPROBED_FUNCTION(void) {}
+void UPROBED_FUNCTION(void) {
+	volatile int dummy = 0;
+	dummy += 1;
+}
 /* Calling via volatile function pointer ensures noinline */
 typedef void (*func_ptr)(void);
 volatile func_ptr uprobe_target_alias = UPROBED_FUNCTION;
@@ -239,9 +242,21 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
+	printf("bytes of function before enabling uprobe: ");
+	for (int i = 0; i < 10; i++) {
+		printf("%02x ", ((unsigned char*)uprobe_target_alias)[i]);
+	}
+	printf("\n");
+
 	context = enable_uprobe(buf, offset);
 	if (!context.instance)
 		return 1;
+
+	printf("bytes of function after enabling uprobe: ");
+	for (int i = 0; i < 10; i++) {
+		printf("%02x ", ((unsigned char*)uprobe_target_alias)[i]);
+	}
+	printf("\n");
 
 	/*
 	 * Execution must reach the uprobed location at least once

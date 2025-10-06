@@ -291,11 +291,11 @@ TST_NOFILE	:=				\
 PKG_CONFIG ?= pkg-config
 pkg-config-check = $(shell sh -c '$(PKG_CONFIG) $(1) && echo y')
 pkg-config-atleast-version = $(shell sh -c '$(PKG_CONFIG) --atleast-version=$(2) $(1) && echo y')
-ifeq ($(call pkg-config-check,libbpf),y)
-TST_NOFILE	+=				\
-		bpf_hash			\
-		bpf_array
-endif
+# ifeq ($(call pkg-config-check,libbpf),y)
+# TST_NOFILE	+=				\
+# 		bpf_hash			\
+# 		bpf_array
+# endif
 
 ifneq ($(ARCH),arm)
 ifneq ($(COMPAT_TEST),y)
